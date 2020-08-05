@@ -6,10 +6,9 @@
         http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context.xsd">
-
-
+    <bean id="createBrokerService" class="org.apache.activemq.broker.BrokerService"/>
     <bean id="createEmbeddedBroker" class="Jms.EmbeddedBroker" init-method="runBroker">
-
+        <property name="brokerService" ref="createBrokerService"/>
     </bean>
 
     <bean id="ConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
