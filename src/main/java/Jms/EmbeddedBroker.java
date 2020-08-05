@@ -11,17 +11,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class EmbeddedBroker {
-
-    BrokerService brokerService;
-
-    public BrokerService getBrokerService() {
-        return brokerService;
-    }
-
-    public void setBrokerService(BrokerService brokerService) {
-        this.brokerService = brokerService;
-    }
-
     private static final Logger logger = LogManager.getLogger();
 
     public static String readUrl() {
@@ -36,7 +25,7 @@ public class EmbeddedBroker {
         return url;
     }
 
-    public void runBroker() {
+    public EmbeddedBroker(BrokerService brokerService) {
 
         try {
 
