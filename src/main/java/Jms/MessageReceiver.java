@@ -44,7 +44,6 @@ public class MessageReceiver {
     public void receiveMessage() {
 
         try {
-
             connection.start();
             Message message = messageConsumer.receive();
             if (message instanceof TextMessage) {

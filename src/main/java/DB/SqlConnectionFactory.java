@@ -13,24 +13,37 @@ import org.apache.logging.log4j.Logger;
 
 public class SqlConnectionFactory {
 
+    private String dbUrl;
+    private String login;
+    private String password;
+
+    public String getDbUrl() {
+        return dbUrl;
+    }
+
+    public void setDbUrl(String dbUrl) {
+        this.dbUrl = dbUrl;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     private static final Logger logger = LogManager.getLogger();
 
-    public Connection getConnection() {
-
-        Properties properties = new Properties();
-        String dbUrl = "";
-        String login = "";
-        String password = "";
-        try (InputStream inputStream = new FileInputStream("src/main/resources/application.properties")) {
-
-            properties.load(inputStream);
-            dbUrl = properties.getProperty("db.url");
-            login = properties.getProperty("db.login");
-            password = properties.getProperty("db.password");
-
-        } catch (IOException ex) {
-            logger.error("file with properties not found", ex.getMessage());
-        }
+    public Connection getConnection(String dbUrl,String login, String password) {
 
         try {
             return DriverManager.getConnection(dbUrl, login, password);

@@ -10,7 +10,8 @@
     <bean id="createBrokerService" class="org.apache.activemq.broker.BrokerService"/>
 
     <bean id="createEmbeddedBroker" class="Jms.EmbeddedBroker">
-        <constructor-arg ref="createBrokerService" name="brokerService"/>
+        <constructor-arg index="0" ref="createBrokerService" name="brokerService"/>
+        <constructor-arg index="1" name="url" value="${embeddedBroker.url}"/>
     </bean>
 
     <bean id="ConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
@@ -68,10 +69,14 @@
           factory-bean="sqlConnectionFactory"
           factory-method="getConnection">
 
+        <constructor-arg index="0" value="${db.url}"/>
+        <constructor-arg index="1" value="${db.login}"/>
+        <constructor-arg index="2" value="${db.password}"/>
     </bean>
 
     <bean id="saveInDB" class="DB.SaveInDB">
         <property name="connection" ref="createSqlConnection"/>
+        <property name="driver" value="${db.driver}"/>
     </bean>
 
 </beans>

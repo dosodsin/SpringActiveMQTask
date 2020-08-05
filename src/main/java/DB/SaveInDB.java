@@ -4,17 +4,22 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.jms.TextMessage;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.util.Properties;
 
 public class SaveInDB {
 
     private static final Logger logger = LogManager.getLogger();
     private Connection connection;
+    private String driver;
+
+    public String getDriver() {
+        return driver;
+    }
+
+    public void setDriver(String driver) {
+        this.driver = driver;
+    }
 
     public Connection getConnection() {
         return connection;
@@ -25,7 +30,7 @@ public class SaveInDB {
     }
 
     public void saveInDB(TextMessage textMessage) throws ClassNotFoundException {
-        Class.forName(databaseDriver());
+        Class.forName(driver);
         try {
             PreparedStatement preparedStatement = connection.prepareStatement("insert into message_body(body) values(?)");
             preparedStatement.setString(1, textMessage.getText());
@@ -46,16 +51,5 @@ public class SaveInDB {
         }
     }
 
-    public static String databaseDriver(){
-        Properties properties = new Properties();
-        String driver = "";
-        try (InputStream inputStream = new FileInputStream("src/main/resources/application.properties")) {
-            properties.load(inputStream);
-            driver = properties.getProperty("db.driver");
-        } catch (IOException ex) {
-            logger.error("file with properties not found", ex.getMessage());
-        }
-        return driver;
-    }
 
 }
