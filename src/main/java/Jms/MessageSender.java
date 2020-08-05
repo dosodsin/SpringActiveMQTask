@@ -1,3 +1,5 @@
+package Jms;
+
 import javax.jms.Connection;
 import javax.jms.MessageProducer;
 import javax.jms.Session;

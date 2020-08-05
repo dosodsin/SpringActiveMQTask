@@ -1,3 +1,5 @@
+package Jms;
+
 import org.apache.activemq.broker.BrokerService;
 
 import java.io.FileInputStream;
@@ -9,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class EmbeddedBroker {
+
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -24,9 +27,8 @@ public class EmbeddedBroker {
         return url;
     }
 
-    public static void runBroker() {
-        BrokerService brokerService = new BrokerService();
-
+    public void runBroker() {
+        BrokerService brokerService=new BrokerService();
         try {
 
             brokerService.addConnector(readUrl());

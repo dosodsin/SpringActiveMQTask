@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+    <bean id="createEmbeddedBroker" class="Jms.EmbeddedBroker">
+
+    </bean>
+
+    <bean id="ConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <constructor-arg name="brokerURL" value="${embeddedBroker.url}"/>
+    </bean>
+
+    <bean id="createConnection" class="org.apache.activemq.ActiveMQConnection"
+          depends-on="createEmbeddedBroker"
+          factory-bean="ConnectionFactory"
+          factory-method="createConnection">
+    </bean>
+
+    <bean id="createSession" class="org.apache.activemq.ActiveMQQueueSession"
+          factory-bean="createConnection"
+          factory-method="createSession">
+        <constructor-arg index="0" value="false"/>
+        <constructor-arg index="1" value="1"/>
+    </bean>
+
+    <bean id="createDestination" class="org.apache.activemq.ActiveMQQueueSession"
+          factory-bean="createSession"
+          factory-method="createQueue">
+        <constructor-arg value="${queueName}"/>
+    </bean>
+
+    <bean id="createConsumer" class="org.apache.activemq.ActiveMQMessageConsumer"
+          factory-bean="createSession"
+          factory-method="createConsumer">
+        <constructor-arg ref="createDestination"/>
+    </bean>
+
+    <bean id="createProducer" class="org.apache.activemq.ActiveMQMessageProducer"
+          factory-bean="createSession"
+          factory-method="createProducer">
+        <constructor-arg ref="createDestination"/>
+    </bean>
+
+
+    <bean id="sendMessage" class="Jms.MessageSender" depends-on="createEmbeddedBroker" init-method="sendMessage">
+        <property name="messageProducer" ref="createProducer"/>
+        <property name="connection" ref="createConnection"/>
+        <property name="session" ref="createSession"/>
+    </bean>
+
+    <bean id="receiveMessage" class="Jms.MessageReceiver" depends-on="createEmbeddedBroker"
+          init-method="receiveMessage">
+        <property name="messageConsumer" ref="createConsumer"/>
+        <property name="connection" ref="createConnection"/>
+        <property name="saveInDB" ref="saveInDB"/>
+    </bean>
+
+    <bean id="sqlConnectionFactory" class="DB.SqlConnectionFactory"/>
+
+    <bean id="createSqlConnection" class="java.sql.Connection"
+          factory-bean="sqlConnectionFactory"
+          factory-method="getConnection">
+
+    </bean>
+
+    <bean id="saveInDB" class="DB.SaveInDB">
+        <property name="connection" ref="createSqlConnection"/>
+    </bean>
+
+</beans>
